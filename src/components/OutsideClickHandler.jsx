@@ -17,23 +17,40 @@ class OutsideClickHandler extends React.PureComponent {
     this.onOutsideClick = this.onOutsideClick.bind(this);
   }
 
-  componentDidMount() {
+  mountListeners = () => {
     if (document.addEventListener) {
       document.addEventListener('mousedown', this.onOutsideClick, true);
+      document.addEventListener('touchstart', this.onOutsideClick, true);
     } else {
       document.attachEvent('onmousedown', this.onOutsideClick);
+    }
+  };
+
+  unmountListeners = () => {
+    if (document.removeEventListener) {
+      document.removeEventListener('mousedown', this.onOutsideClick, true);
+      document.removeEventListener('touchstart', this.onOutsideClick, true);
+    } else {
+      document.detachEvent('onmousedown', this.onOutsideClick);
+    }
+  };
+
+  componentWillReceiveProps (nextProps: Object) {
+    const {focused} = nextProps;
+    if (focused) {
+      setTimeout(() => this.mountListeners(), 500);
+    } else {
+      this.unmountListeners();
     }
   }
 
   componentWillUnmount() {
-    if (document.removeEventListener) {
-      document.removeEventListener('mousedown', this.onOutsideClick, true);
-    } else {
-      document.detachEvent('onmousedown', this.onOutsideClick);
-    }
+    this.unmountListeners();
   }
 
   onOutsideClick(e) {
+    const { focused } = this.props;
+    if (!focused) return;
     const event = e || window.event;
     const mouseTarget = (typeof event.which !== 'undefined') ? event.which : event.button;
     const isDescendantOfRoot = this.childNode.contains(event.target);

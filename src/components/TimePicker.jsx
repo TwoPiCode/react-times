@@ -340,8 +340,7 @@ class TimePicker extends React.PureComponent {
         { trigger || (
           <div
             onClick={this.onFocus}
-            className={pickerPreviewClass}
-          >
+            className={pickerPreviewClass}>
             <div className={previewContainerClass}>
               {withoutIcon ? '' : (ICONS.time)}
               {placeholder || times}
@@ -350,8 +349,7 @@ class TimePicker extends React.PureComponent {
         ) }
         <OutsideClickHandler
           onOutsideClick={this.onClearFocus}
-          focused={focused}
-        >
+          focused={focused}>
           {theme === 'material'
             ? this.renderMaterialTheme()
             : this.renderClassicTheme()}

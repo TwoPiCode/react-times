@@ -83,6 +83,7 @@
   },
   "scripts": {
     "babel": "babel ./src --out-dir ./lib",
+    "develop": "babel ./src -w --out-dir ./lib",
     "build": "npm run clean && npm run babel",
     "build:js": "babel src/ -d lib/ --ignore src/components",
     "clean": "rimraf lib",
