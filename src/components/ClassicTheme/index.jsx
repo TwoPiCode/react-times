@@ -37,12 +37,12 @@ class ClassicTheme extends React.PureComponent {
     const [times, meridiem] = time.split(' ');
     const { handleTimeChange, handleMeridiemChange } = this.props;
     handleMeridiemChange && handleMeridiemChange(meridiem);
-    handleTimeChange && handleTimeChange(times);
+    handleTimeChange && handleTimeChange({time: times, meridiem});
   }
 
   handle24ModeHourChange(time) {
     const { handleTimeChange } = this.props;
-    handleTimeChange && handleTimeChange(time);
+    handleTimeChange && handleTimeChange({time, meridiem: null});
   }
 
   checkTimeIsActive(time) {
