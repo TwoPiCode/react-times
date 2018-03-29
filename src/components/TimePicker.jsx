@@ -320,6 +320,7 @@ class TimePicker extends React.PureComponent {
       placeholder,
       withoutIcon,
       colorPalette,
+      containerClass: containerClassProp
     } = this.props;
 
     const { focused } = this.state;
@@ -336,7 +337,7 @@ class TimePicker extends React.PureComponent {
       : 'preview_container';
 
     return (
-      <div className={containerClass}>
+      <div className={containerClass + (containerClassProp ? ' ' + containerClassProp : '')}>
         { trigger || (
           <div
             onClick={this.onFocus}
