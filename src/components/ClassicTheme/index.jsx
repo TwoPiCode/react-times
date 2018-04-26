@@ -13,7 +13,9 @@ const propTypes = {
   meridiem: PropTypes.string,
   colorPalette: PropTypes.string,
   handleTimeChange: PropTypes.func,
-  handleMeridiemChange: PropTypes.func
+  handleMeridiemChange: PropTypes.func,
+  withMaxTime: PropTypes.string,
+  withMinType: PropTypes.string
 };
 
 const defaultProps = {
@@ -21,6 +23,8 @@ const defaultProps = {
   minute: '00',
   timeMode: 24,
   meridiem: 'AM',
+  withMaxTime: null,
+  withMinTime: null,
   colorPalette: 'light',
   handleTimeChange: () => {},
   handleMeridiemChange: () => {}
@@ -98,7 +102,7 @@ class ClassicTheme extends React.PureComponent {
     let sliceHigh = TIMES_24_MODE.length
     if (props.withMinTime)
       sliceLow = TIMES_24_MODE.findIndex(time => time === props.withMinTime)
-    if (props.withMinTime)
+    if (props.withMaxTime)
       sliceHigh = TIMES_24_MODE.findIndex(time => time === props.withMaxTime)
     return TIMES_24_MODE.map((hourValue, index) => {
       const timeClass = this.checkTimeIsActive(hourValue)

@@ -306,6 +306,8 @@ class TimePicker extends React.PureComponent {
 
     return (
       <ClassicTheme
+        withMinTime={this.props.withMinTime}
+        withMaxTime={this.props.withMaxTime}
         colorPalette={colorPalette}
         handleMeridiemChange={this.handleMeridiemChange}
         handleTimeChange={this.handleHourAndMinuteChange}
