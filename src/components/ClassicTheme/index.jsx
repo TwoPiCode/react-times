@@ -73,7 +73,7 @@ class ClassicTheme extends React.PureComponent {
     let sliceLow = 0;
     let sliceHigh = TIMES_12_MODE.length;
     if (withMinTime) {
-      sliceLow = TIMES_24_MODE.findIndex(time => time === withMinTime);
+      sliceLow = TIMES_24_MODE.findIndex(time => time === withMinTime) + 1;
     }
     if (withMinTime) {
       sliceHigh = TIMES_24_MODE.findIndex(time => time === withMaxTime);
@@ -103,7 +103,7 @@ class ClassicTheme extends React.PureComponent {
     let sliceLow = 0;
     let sliceHigh = TIMES_24_MODE.length;
     if (withMinTime) {
-      sliceLow = TIMES_24_MODE.findIndex(time => time === withMinTime);
+      sliceLow = TIMES_24_MODE.findIndex(time => time === withMinTime) + 1;
     }
     if (withMaxTime) {
       sliceHigh = TIMES_24_MODE.findIndex(time => time === withMaxTime);
