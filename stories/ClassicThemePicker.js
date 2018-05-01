@@ -15,6 +15,8 @@ storiesOf('Classic Theme', module)
     <TimePickerWrapper
       theme="classic"
       timeMode="12"
+      withMaxTime="15:00"
+      withMinTime="09:00"
       defaultTime="10:30"
     />
   ))
