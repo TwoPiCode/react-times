@@ -75,8 +75,8 @@ class ClassicTheme extends React.PureComponent {
     if (withMinTime) {
       sliceLow = TIMES_24_MODE.findIndex(time => time === withMinTime) + 1;
     }
-    if (withMinTime) {
-      sliceHigh = TIMES_24_MODE.findIndex(time => time === withMaxTime);
+    if (withMaxTime) {
+      sliceHigh = TIMES_24_MODE.findIndex(time => time === withMaxTime) - 1;
     }
     return [...TIMES_12_MODE].slice(sliceLow, sliceHigh + 1).map((hourValue, index) => {
       const timeClass = this.checkTimeIsActive(hourValue)
@@ -106,7 +106,7 @@ class ClassicTheme extends React.PureComponent {
       sliceLow = TIMES_24_MODE.findIndex(time => time === withMinTime) + 1;
     }
     if (withMaxTime) {
-      sliceHigh = TIMES_24_MODE.findIndex(time => time === withMaxTime);
+      sliceHigh = TIMES_24_MODE.findIndex(time => time === withMaxTime) - 1;
     }
     return [...TIMES_24_MODE].slice(sliceLow, sliceHigh + 1).map((hourValue, index) => {
       const timeClass = this.checkTimeIsActive(hourValue)
