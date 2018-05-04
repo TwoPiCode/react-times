@@ -130,7 +130,9 @@ TimePickerWrapper.defaultProps = {
   defaultTime: null,
   focused: false,
   meridiem: null,
-  showTimezone: false
+  showTimezone: false,
+  withMinTime: '10:00',
+  withMaxTime: '18:00'
 };
 
 export default TimePickerWrapper;

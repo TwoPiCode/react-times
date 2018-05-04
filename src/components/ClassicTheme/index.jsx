@@ -23,8 +23,8 @@ const defaultProps = {
   minute: '00',
   timeMode: 24,
   meridiem: 'AM',
-  withMaxTime: null,
-  withMinTime: null,
+  withMaxTime: '23:30',
+  withMinTime: '00:00',
   colorPalette: 'light',
   handleTimeChange: () => {},
   handleMeridiemChange: () => {}
@@ -78,7 +78,7 @@ class ClassicTheme extends React.PureComponent {
     if (withMaxTime) {
       sliceHigh = TIMES_24_MODE.findIndex(time => time === withMaxTime);
     }
-    return [...TIMES_12_MODE].slice(sliceLow, sliceHigh + 1).map((hourValue, index) => {
+    return [...TIMES_12_MODE].slice(sliceLow, sliceHigh).map((hourValue, index) => {
       const timeClass = this.checkTimeIsActive(hourValue)
         ? 'classic_time active'
         : 'classic_time';
@@ -108,7 +108,7 @@ class ClassicTheme extends React.PureComponent {
     if (withMaxTime) {
       sliceHigh = TIMES_24_MODE.findIndex(time => time === withMaxTime);
     }
-    return [...TIMES_24_MODE].slice(sliceLow, sliceHigh + 1).map((hourValue, index) => {
+    return [...TIMES_24_MODE].slice(sliceLow, sliceHigh).map((hourValue, index) => {
       const timeClass = this.checkTimeIsActive(hourValue)
         ? 'classic_time active'
         : 'classic_time';
