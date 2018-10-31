@@ -1,7 +1,6 @@
 import '../css/classic/default.css';
 
-import React from 'react';
-import { Fragment } from 'react';
+import { Fragment, React } from 'react';
 import TimePickerWrapper from '../examples/TimePickerWrapper';
 import { storiesOf } from '@storybook/react';
 import TimePicker from '../src/components/TimePicker';
