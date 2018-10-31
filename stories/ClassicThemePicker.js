@@ -1,8 +1,10 @@
 import '../css/classic/default.css';
 
 import React from 'react';
+import { Fragment } from 'react';
 import TimePickerWrapper from '../examples/TimePickerWrapper';
 import { storiesOf } from '@storybook/react';
+import TimePicker from '../src/components/TimePicker';
 
 storiesOf('Classic Theme', module)
   .addWithInfo('basic', () => (
@@ -12,13 +14,14 @@ storiesOf('Classic Theme', module)
     <TimePickerWrapper theme="classic" colorPalette="dark" />
   ))
   .addWithInfo('12 hours mode', () => (
-    <TimePickerWrapper
-      theme="classic"
-      timeMode="12"
-      withMaxTime="15:00"
-      withMinTime="09:00"
-      defaultTime="10:30"
-    />
+   <Fragment>
+     <TimePicker
+          theme="classic"
+          minuteStep={30}
+          withMinTime={'09:00'}
+//          withMaxTime={'17:00'}
+          wrap={true}/>
+   </Fragment>
   ))
   .addWithInfo('focused at setup', () => (
     <TimePickerWrapper

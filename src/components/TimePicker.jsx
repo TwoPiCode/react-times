@@ -26,6 +26,7 @@ const propTypes = {
   onMinuteChange: PropTypes.func,
   withMinTime: PropTypes.string,
   withMaxTime: PropTypes.string,
+  wrap: PropTypes.bool,
   onTimeChange: PropTypes.func,
   onTimezoneChange: PropTypes.func,
   phrases: PropTypes.object,
@@ -61,6 +62,7 @@ const defaultProps = {
   language: 'en',
   withMinTime: null,
   withMaxTime: null,
+  wrap: false,
   meridiem: TIME.meridiem,
   onFocusChange: () => {},
   onHourChange: () => {},
@@ -308,6 +310,7 @@ class TimePicker extends React.PureComponent {
       <ClassicTheme
         withMinTime={this.props.withMinTime}
         withMaxTime={this.props.withMaxTime}
+        wrap={this.props.wrap}
         colorPalette={colorPalette}
         handleMeridiemChange={this.handleMeridiemChange}
         handleTimeChange={this.handleHourAndMinuteChange}

@@ -15,7 +15,8 @@ const propTypes = {
   handleTimeChange: PropTypes.func,
   handleMeridiemChange: PropTypes.func,
   withMaxTime: PropTypes.string,
-  withMinTime: PropTypes.string
+  withMinTime: PropTypes.string,
+  wrap: PropTypes.bool
 };
 
 const defaultProps = {
@@ -25,11 +26,31 @@ const defaultProps = {
   meridiem: 'AM',
   withMaxTime: '23:30',
   withMinTime: '00:00',
+  wrap: false,
   colorPalette: 'light',
   handleTimeChange: () => {},
   handleMeridiemChange: () => {}
 };
 
+export const timesToMap = (times, wrap) => {
+  const base = times.map(time => {
+    const split = time.split(':');
+    return {
+      label: time,
+      value: [(parseInt(split[0])).toString().padStart(2, '0'), split[1]].join(':')
+    };
+  });
+  if (!wrap) return base;
+  return base.concat(
+    times.map(time => {
+      const split = time.split(':');
+      return {
+        label: `${time} (+1)`,
+        value: [(parseInt(split[0]) + 24).toString().padStart(2, '0'), split[1]].join(':')
+      };
+    })
+  );
+};
 class ClassicTheme extends React.PureComponent {
   constructor(props) {
     super(props);
@@ -69,7 +90,7 @@ class ClassicTheme extends React.PureComponent {
   }
 
   render12Hours() {
-    const { colorPalette, withMinTime, withMaxTime } = this.props;
+    const { colorPalette, withMinTime, withMaxTime, wrap } = this.props;
     let sliceLow = 0;
     let sliceHigh = TIMES_12_MODE.length;
     if (withMinTime) {
@@ -100,17 +121,21 @@ class ClassicTheme extends React.PureComponent {
   }
 
   render24Hours() {
-    const { colorPalette, withMinTime, withMaxTime } = this.props;
+    const { colorPalette, withMinTime, withMaxTime, wrap } = this.props;
+    const times = timesToMap(TIMES_24_MODE, wrap);
+    const values = times.map(time => time.value);
+
     let sliceLow = 0;
-    let sliceHigh = TIMES_24_MODE.length;
+    let sliceHigh = values.length;
     if (withMinTime) {
-      sliceLow = TIMES_24_MODE.findIndex(time => time === withMinTime);
+      sliceLow = values.findIndex(time => time === withMinTime);
     }
     if (withMaxTime) {
-      sliceHigh = TIMES_24_MODE.findIndex(time => time === withMaxTime) + 1;
+      sliceHigh = values.findIndex(time => time === withMaxTime) + 1;
     }
 
-    return [...TIMES_24_MODE].slice(sliceLow, sliceHigh).map((hourValue, index) => {
+    return [...times].slice(sliceLow, sliceHigh).map((time, index) => {
+      const { label, value: hourValue } = time;
       const timeClass = this.checkTimeIsActive(hourValue)
         ? 'classic_time active'
         : 'classic_time';
@@ -122,7 +147,7 @@ class ClassicTheme extends React.PureComponent {
           }}
           className={`${timeClass} ${colorPalette}`}
         >
-          {hourValue}
+          {label}
         </div>
       );
     });
