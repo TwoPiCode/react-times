@@ -32,7 +32,7 @@ const defaultProps = {
   handleMeridiemChange: () => {}
 };
 
-export const timesToMap = (times, wrap) => {
+export const timesToMap = (times, wrap, mode) => {
   const base = times.map(time => {
     const split = time.split(':');
     return {
@@ -42,11 +42,12 @@ export const timesToMap = (times, wrap) => {
   });
   if (!wrap) return base;
   return base.concat(
-    times.map(time => {
+    times.map((time) => {
       const split = time.split(':');
+      let base = mode;
       return {
         label: `${time} (+1)`,
-        value: [(parseInt(split[0]) + 24).toString().padStart(2, '0'), split.slice(1).join(' ')].join(':')
+        value: [(base + parseInt(split[0])).toString().padStart(2, '0'), split.slice(1).join(' ')].join(':')
       };
     })
   );
@@ -91,13 +92,11 @@ class ClassicTheme extends React.PureComponent {
 
   render12Hours() {
     const { colorPalette, withMinTime, withMaxTime, wrap } = this.props;
-    const times = timesToMap(TIMES_12_MODE, wrap);
-    const times24 = timesToMap(TIMES_24_MODE, wrap);
-    const values = times.map(time => time.value);
+    const times = timesToMap(TIMES_12_MODE, wrap, 12);
+    const times24 = timesToMap(TIMES_24_MODE, wrap, 24);
     const values24 = times24.map(time => time.value);
-
     let sliceLow = 0;
-    let sliceHigh = values.length;
+    let sliceHigh = values24.length;
     if (withMinTime) {
       sliceLow = values24.findIndex(time => time === withMinTime);
     }
@@ -114,7 +113,8 @@ class ClassicTheme extends React.PureComponent {
         <div
           key={index}
           onClick={() => {
-            this.handle24ModeHourChange(values24[index]);
+            wrap ? this.handle24ModeHourChange([...values24].slice(sliceLow, sliceHigh)[index])
+            : this.handle12ModeHourChange(hourValue);
           }}
           className={`${timeClass} ${colorPalette}`}
         >
@@ -126,7 +126,7 @@ class ClassicTheme extends React.PureComponent {
 
   render24Hours() {
     const { colorPalette, withMinTime, withMaxTime, wrap } = this.props;
-    const times = timesToMap(TIMES_24_MODE, wrap);
+    const times = timesToMap(TIMES_24_MODE, wrap, 24);
     const values = times.map(time => time.value);
 
     let sliceLow = 0;
