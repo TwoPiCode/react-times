@@ -3,11 +3,15 @@ import PropTypes from 'prop-types';
 
 import OutsideClickHandler from './OutsideClickHandler';
 import MaterialTheme from './MaterialTheme';
-import ClassicTheme from './ClassicTheme';
+import ClassicTheme, {timesToMap} from './ClassicTheme';
 import timeHelper from '../utils/time.js';
 import languageHelper from '../utils/language';
 import ICONS from '../utils/icons';
 import { is } from '../utils/func';
+import {
+  TIMES_12_MODE,
+  TIMES_24_MODE
+} from '../utils/const_value';
 
 // aliases for defaultProps readability
 const TIME = timeHelper.time({ useTz: false });
@@ -119,13 +123,15 @@ class TimePicker extends React.PureComponent {
       timeMode,
       timezone,
       meridiem,
+      wrap
     } = this.props;
     const timeData = timeHelper.time({
       time,
       meridiem,
       timeMode,
       tz: timezone,
-      useTz: !time && !timeChanged && useTz
+      useTz: !time && !timeChanged && useTz,
+      wrap
     });
     return timeData;
   }
@@ -171,7 +177,12 @@ class TimePicker extends React.PureComponent {
     } = this.props;
 
     if (wrap) {
-
+      const timeData = this.timeData(this.state.timeChanged);
+      const times12 = timesToMap(TIMES_12_MODE, wrap, 24);
+      const times24 = timesToMap(TIMES_24_MODE, wrap, 24);
+      const values24 = times24.map(time => time.value);
+      const index = values24.indexOf(timeData.time);
+      return times12[index].label;
     }
 
     const [hour, minute] = this.getHourAndMinute();

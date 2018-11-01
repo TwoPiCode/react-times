@@ -18,6 +18,7 @@ storiesOf('Classic Theme', module)
           theme="classic"
           minuteStep={30}
           timeMode='12'
+          time='47:00'
           // withMinTime={'23:00'}
           // withMaxTime={'47:00'}
           onTimeChange={time => console.dir(time)}
