@@ -179,25 +179,6 @@ class TimePicker extends React.PureComponent {
         minute,
         meridiem: this.meridiem
       });
-    } else if (timeFormat && is.string(timeFormat)) {
-      times = timeFormat;
-      if (/HH?/.test(times) || /MM?/.test(times)) {
-        if (validTimeMode === 12) {
-          //  console.warn('It seems you are using 12 hours mode with 24 hours time format. Please check your timeMode and timeFormat props');
-        }
-      } else if (/hh?/.test(times) || /mm?/.test(times)) {
-        if (validTimeMode === 24) {
-          //  console.warn('It seems you are using 24 hours mode with 12 hours time format. Please check your timeMode and timeFormat props');
-        }
-      }
-      times = times.replace(/(HH|hh)/g, hour);
-      times = times.replace(/(MM|mm)/g, minute);
-      times = times.replace(/(H|h)/g, Number(hour));
-      times = times.replace(/(M|m)/g, Number(minute));
-    } else {
-      times = (validTimeMode === 12)
-        ? `${hour} : ${minute} ${this.meridiem}`
-        : `${hour} : ${minute}`;
     }
     return times;
   }
