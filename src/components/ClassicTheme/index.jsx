@@ -37,7 +37,7 @@ export const timesToMap = (times, wrap) => {
     const split = time.split(':');
     return {
       label: time,
-      value: [(parseInt(split[0])).toString().padStart(2, '0'), split[1]].join(':')
+      value: [(parseInt(split[0])).toString().padStart(2, '0'), split.slice(1).join(' ')].join(':')
     };
   });
   if (!wrap) return base;
@@ -46,7 +46,7 @@ export const timesToMap = (times, wrap) => {
       const split = time.split(':');
       return {
         label: `${time} (+1)`,
-        value: [(parseInt(split[0]) + 24).toString().padStart(2, '0'), split[1]].join(':')
+        value: [(parseInt(split[0]) + 24).toString().padStart(2, '0'), split.slice(1).join(' ')].join(':')
       };
     })
   );
@@ -91,20 +91,25 @@ class ClassicTheme extends React.PureComponent {
 
   render12Hours() {
     const { colorPalette, withMinTime, withMaxTime, wrap } = this.props;
+    const times = timesToMap(TIMES_12_MODE, wrap);
+    const times24 = timesToMap(TIMES_24_MODE, wrap);
+    const values = times.map(time => time.value);
+    const values24 = times24.map(time => time.value);
+
     let sliceLow = 0;
-    let sliceHigh = TIMES_12_MODE.length;
+    let sliceHigh = values.length;
     if (withMinTime) {
-      sliceLow = TIMES_24_MODE.findIndex(time => time === withMinTime);
+      sliceLow = values24.findIndex(time => time === withMinTime);
     }
     if (withMaxTime) {
-      sliceHigh = TIMES_24_MODE.findIndex(time => time === withMaxTime) + 1;
+      sliceHigh = values24.findIndex(time => time === withMaxTime) + 1;
     }
 
-    return [...TIMES_12_MODE].slice(sliceLow, sliceHigh).map((hourValue, index) => {
+    return [...times].slice(sliceLow, sliceHigh).map((time, index) => {
+      const { label, value: hourValue } = time;
       const timeClass = this.checkTimeIsActive(hourValue)
         ? 'classic_time active'
         : 'classic_time';
-      const [time, meridiem] = hourValue.split(' ');
       return (
         <div
           key={index}
@@ -113,8 +118,7 @@ class ClassicTheme extends React.PureComponent {
           }}
           className={`${timeClass} ${colorPalette}`}
         >
-          {time}&nbsp;
-          <span className="meridiem">{meridiem}</span>
+          {label}
         </div>
       );
     });
