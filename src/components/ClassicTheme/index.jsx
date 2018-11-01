@@ -114,7 +114,7 @@ class ClassicTheme extends React.PureComponent {
         <div
           key={index}
           onClick={() => {
-            this.handle12ModeHourChange(hourValue);
+            this.handle24ModeHourChange(values24[index]);
           }}
           className={`${timeClass} ${colorPalette}`}
         >

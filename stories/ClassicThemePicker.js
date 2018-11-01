@@ -20,6 +20,7 @@ storiesOf('Classic Theme', module)
           timeMode='12'
           withMinTime={'23:00'}
           withMaxTime={'47:00'}
+          onTimeChange={time => console.dir(time)}
           wrap={true}/>
    </Fragment>
   ))
