@@ -36,7 +36,7 @@ export const convert24to12 = (time) => {
   const times24 = timesToMap(TIMES_24_MODE, true, 24);
   const values24 = times24.map(time => time.value);
   const index = values24.indexOf(time);
-  return timesToMap(TIMES_12_MODE, true, 12)[index].label.split('(')[0].replace(' ', '');
+  return timesToMap(TIMES_12_MODE, true, 12)[index].label.replace(' ', '');
 };
 
 export const timesToMap = (times, wrap, mode) => {
