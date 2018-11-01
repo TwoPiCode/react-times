@@ -46,7 +46,7 @@ export const timesToMap = (times, wrap, mode) => {
       const split = time.split(':');
       let base = mode;
       return {
-        label: `${time} (+1)`,
+        label: `${time} (+1 day)`,
         value: [(base + parseInt(split[0])).toString().padStart(2, '0'), split.slice(1).join(' ')].join(':')
       };
     })
