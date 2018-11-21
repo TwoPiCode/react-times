@@ -32,6 +32,10 @@ const defaultProps = {
   handleMeridiemChange: () => {}
 };
 
+let userIsDragging = false;
+let initialTouchX = 0;
+let initialTouchY = 0;
+
 export const convert24to12 = (time) => {
   const times24 = timesToMap(TIMES_24_MODE, true, 24);
   const values24 = times24.map(time => time.value);
@@ -119,7 +123,26 @@ class ClassicTheme extends React.PureComponent {
       return (
         <div
           key={index}
-          onClick={() => {
+          onTouchStart={({ touches: [touch] }) => {
+            this.initialTouchX = touch.clientX;
+            this.initialTouchY = touch.clientY;
+            this.userIsDragging = false;
+          }}
+          onTouchMove={({ touches: [touch] }) => {
+            const deltaX = Math.abs(touch.clientX - this.initialTouchX);
+            const deltaY = Math.abs(touch.clientY - this.initialTouchY);
+            const moveThreshold = 5;
+            this.userIsDragging = deltaX > moveThreshold || deltaY > moveThreshold;
+          }}
+          onTouchEnd={() => {
+            this.userIsDragging = false;
+          }}
+          onTouchEnd={() => {
+            if (this.userIsDragging) return;
+            wrap ? this.handle24ModeHourChange([...values24].slice(sliceLow, sliceHigh)[index])
+            : this.handle12ModeHourChange(hourValue);
+          }}
+          onMouseDown={() => {
             wrap ? this.handle24ModeHourChange([...values24].slice(sliceLow, sliceHigh)[index])
             : this.handle12ModeHourChange(hourValue);
           }}
@@ -153,8 +176,28 @@ class ClassicTheme extends React.PureComponent {
       return (
         <div
           key={index}
-          onClick={() => {
-            this.handle24ModeHourChange(hourValue);
+          onTouchStart={({ touches: [touch] }) => {
+            this.initialTouchX = touch.clientX;
+            this.initialTouchY = touch.clientY;
+            this.userIsDragging = false;
+          }}
+          onTouchMove={({ touches: [touch] }) => {
+            const deltaX = Math.abs(touch.clientX - this.initialTouchX);
+            const deltaY = Math.abs(touch.clientY - this.initialTouchY);
+            const moveThreshold = 5;
+            this.userIsDragging = deltaX > moveThreshold || deltaY > moveThreshold;
+          }}
+          onTouchEnd={() => {
+            this.userIsDragging = false;
+          }}
+          onTouchEnd={() => {
+            if (this.userIsDragging) return;
+            wrap ? this.handle24ModeHourChange([...values].slice(sliceLow, sliceHigh)[index])
+            : this.handle12ModeHourChange(hourValue);
+          }}
+          onMouseDown={() => {
+            wrap ? this.handle24ModeHourChange([...values].slice(sliceLow, sliceHigh)[index])
+            : this.handle12ModeHourChange(hourValue);
           }}
           className={`${timeClass} ${colorPalette}`}
         >
