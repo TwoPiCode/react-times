@@ -367,7 +367,8 @@ class TimePicker extends React.PureComponent {
       <div className={containerClass + (containerClassProp ? ' ' + containerClassProp : '')}>
         { trigger || (
           <div
-            onClick={this.onFocus}
+            onMouseUp={this.onFocus}
+            onTouchEnd={this.onFocus}
             className={pickerPreviewClass}>
             <div className={previewContainerClass}>
               {withoutIcon ? '' : (ICONS.time)}
