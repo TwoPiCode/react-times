@@ -119,13 +119,9 @@ class ClassicTheme extends React.PureComponent {
       return (
         <div
           key={index}
-          onMouseUp={() => {
+          onClick={() => {
             wrap ? this.handle24ModeHourChange([...values24].slice(sliceLow, sliceHigh)[index])
             : this.handle12ModeHourChange(hourValue);
-          }}
-          onTouchEnd={() => {
-            wrap ? this.handle24ModeHourChange([...values24].slice(sliceLow, sliceHigh)[index])
-              : this.handle12ModeHourChange(hourValue);
           }}
           className={`${timeClass} ${colorPalette}`}
         >
