@@ -183,7 +183,7 @@ class TimePicker extends React.PureComponent {
       const values24 = times24.map(time => time.value);
       const index = values24.indexOf(timeData.time);
       if (!times12[index]) return '-';
-      return times12[index];
+      return times12[index].label;
     }
 
     const [hour, minute] = this.getHourAndMinute();
