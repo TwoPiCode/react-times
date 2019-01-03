@@ -187,7 +187,7 @@ class TimePicker extends React.PureComponent {
       return (
         <div>
           <span className='time'>{split[0]}</span>
-          <span className='extra'>({split[1]}</span>
+          <span className='extra'>{split[1].length ? '(' + split[1] : ''}</span>
         </div>
       );
     }
