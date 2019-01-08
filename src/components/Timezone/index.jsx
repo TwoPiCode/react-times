@@ -6,8 +6,6 @@ import timeHelper from '../../utils/time';
 import TimezonePicker from './TimezonePicker';
 
 const TIME = timeHelper.time();
-TIME.tz = timeHelper.guessUserTz();
-
 class Timezone extends React.PureComponent {
   constructor(props) {
     super(props);

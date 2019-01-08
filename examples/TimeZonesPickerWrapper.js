@@ -1,12 +1,10 @@
 import React from 'react';
-import moment from 'moment';
 import Timezone from '../src/components/Timezone';
 import timeHelper from '../src/utils/time';
 import languageHelper from '../src/utils/language';
 
 const TIME = timeHelper.time();
 TIME.current = timeHelper.current();
-TIME.tz = timeHelper.guessUserTz();
 
 class TimeZonesPickerWrapper extends React.Component {
   constructor(props) {
@@ -40,12 +38,8 @@ class TimeZonesPickerWrapper extends React.Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
-
-TimeZonesPickerWrapper.defaultProps = {
-  timezone: TIME.tz
-};
 
 export default TimeZonesPickerWrapper;

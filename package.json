@@ -1,19 +1,17 @@
 {
   "name": "react-times",
   "description": "A react time-picker component, no jquery-rely",
-  "version": "3.3.8",
+  "version": "3.4.0",
   "author": "ecmadao",
   "bugs": {
     "url": "https://github.com/ecmadao/react-times/issues"
   },
   "dependencies": {
     "moment": "^2.19.1",
-    "moment-timezone": "^0.5.14",
     "prop-types": "^15.6.0",
     "react": "^16.3.2",
     "react-bootstrap-typeahead": "^2.4.0",
     "react-dom": "^16.3.2",
-    "react-times": "https://github.com/TwoPiCode/react-times#47c1cf3701289f0b09c8b7dcd36ea4cd7b85284e",
     "react-transition-group": "^2.2.2"
   },
   "peerDependencies": {

@@ -14,8 +14,6 @@ function loadStories() {
   require('../stories/TwelveHoursMode');
   require('../stories/ClassicThemePicker');
   require('../stories/CustomTrigger');
-  require('../stories/DifferentLanguage');
-  require('../stories/WithTimeZones');
 }
 
 setAddon(infoAddon);

@@ -1,4 +1,4 @@
-import moment from 'moment-timezone';
+import moment from 'moment';
 import { expect } from 'chai';
 import timeHelper from '../src/utils/time';
 import drag from '../src/utils/drag';
@@ -41,9 +41,8 @@ describe('Functional utils', () => {
 });
 
 // because mocha doesn't play nice with arrow functions 😞
-const tz = timeHelper.guessUserTz();
-const time24 = moment().tz(tz.zoneName).format('HH:mmA').split(/:/);
-const time12 = moment().tz(tz.zoneName).format('hh:mmA').split(/:/);
+const time24 = moment().format('HH:mmA').split(/:/);
+const time12 = moment().format('hh:mmA').split(/:/);
 
 const modes = [24, 12];
 const meridies = ['AM', 'PM']; // yes, this is the correct plural 😜

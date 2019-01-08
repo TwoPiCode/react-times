@@ -32,18 +32,14 @@ const propTypes = {
   withMaxTime: PropTypes.string,
   wrap: PropTypes.bool,
   onTimeChange: PropTypes.func,
-  onTimezoneChange: PropTypes.func,
   phrases: PropTypes.object,
   placeholder: PropTypes.string,
-  showTimezone: PropTypes.bool,
   theme: PropTypes.string,
   time: PropTypes.string,
   timeMode: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number
   ]),
-  timezone: PropTypes.string,
-  timezoneIsEditable: PropTypes.bool,
   trigger: PropTypes.oneOfType([
     PropTypes.func,
     PropTypes.object,
@@ -73,9 +69,7 @@ const defaultProps = {
   onMeridiemChange: () => {},
   onMinuteChange: () => {},
   onTimeChange: () => {},
-  onTimezoneChange: () => {},
   placeholder: '',
-  showTimezone: false,
   theme: 'material',
   time: '',
   timeMode: TIME.mode,
@@ -91,13 +85,9 @@ const defaultProps = {
 class TimePicker extends React.PureComponent {
   constructor(props) {
     super(props);
-    const { focused, timezone, onTimezoneChange } = props;
-    const timeData = this.timeData(false);
-    const timezoneData = timeHelper.tzForName(timeData.timezone);
-
+    const { focused } = props;
     this.state = {
       focused,
-      timezoneData,
       timeChanged: false
     };
 
@@ -108,20 +98,12 @@ class TimePicker extends React.PureComponent {
     this.handleMinuteChange = this.handleMinuteChange.bind(this);
     this.onClearFocus = this.onClearFocus.bind(this);
     this.onFocus = this.onFocus.bind(this);
-
-    // if a timezone value was not passed in,
-    // call the callback with the default value used for timezone
-    if (!timezone) {
-      onTimezoneChange(timezoneData);
-    }
   }
 
   timeData(timeChanged) {
     const {
       time,
-      useTz,
       timeMode,
-      timezone,
       meridiem,
       wrap
     } = this.props;
@@ -129,8 +111,6 @@ class TimePicker extends React.PureComponent {
       time,
       meridiem,
       timeMode,
-      tz: timezone,
-      useTz: !time && !timeChanged && useTz,
       wrap
     });
     return timeData;
@@ -293,12 +273,8 @@ class TimePicker extends React.PureComponent {
       language,
       limitDrag,
       minuteStep,
-      showTimezone,
-      onTimezoneChange,
-      timezoneIsEditable,
     } = this.props;
 
-    const { timezoneData } = this.state;
     const [hour, minute] = this.getHourAndMinute();
 
     return (
@@ -311,16 +287,12 @@ class TimePicker extends React.PureComponent {
         handleHourChange={this.handleHourChange}
         handleMeridiemChange={this.handleMeridiemChange}
         handleMinuteChange={this.handleMinuteChange}
-        onTimezoneChange={onTimezoneChange}
         hour={hour}
         language={language}
         meridiem={this.meridiem}
         minute={minute}
         phrases={this.languageData()}
-        showTimezone={showTimezone}
         timeMode={parseInt(timeMode, 10)}
-        timezone={timezoneData}
-        timezoneIsEditable={timezoneIsEditable}
       />
     );
   }
