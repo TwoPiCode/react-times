@@ -163,7 +163,23 @@ class TimePicker extends React.PureComponent {
       const values24 = times24.map(time => time.value);
       const index = values24.indexOf(timeData.time);
       if (!times12[index]) return '-';
-      const split = times12[index].label.split(' (');
+      let split = times12[index].label.split(' (');
+      
+      if (!split) {
+        split = [];
+
+        // A custom time has been specified, we need to do some trickery here.
+        const timeSplit = timeData.time.split(':');
+        let hour = parseInt(timeSplit[0], 10);
+
+        if (hour >= 24) {
+          split[1] = '+1 day)';
+          hour = 24 - hour;
+        }
+
+        split[0] = `${hour}:${timeSplit[0]}`;
+      }
+      
       return (
         <div>
           <span className='time'>{split[0]}</span>
