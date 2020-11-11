@@ -40,12 +40,18 @@ export const convert24to12 = (time) => {
   let check = time;
   const split = time.split(":");
   const minute = split[1];
+  let isCustom = false;
   if (minute !== 0 && minute !== 30) {
+    isCustom = true;
     check = `${split[0]}:00`;
   }
 
   const index = values24.indexOf(check);
-  return timesToMap(TIMES_12_MODE, true, 12)[index].label.replace(" ", "");
+  const result = timesToMap(TIMES_12_MODE, true, 12)[index].label.replace(" ", "");
+  if (isCustom) {
+    return result.replace(':00', `:${split[1]}`)
+  }
+  return result;
 };
 
 export const timesToMap = (times, wrap, mode) => {
