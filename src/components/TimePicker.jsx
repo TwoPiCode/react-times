@@ -1,17 +1,14 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-
-import OutsideClickHandler from './OutsideClickHandler';
-import MaterialTheme from './MaterialTheme';
-import ClassicTheme, {timesToMap} from './ClassicTheme';
-import timeHelper from '../utils/time.js';
-import languageHelper from '../utils/language';
-import ICONS from '../utils/icons';
-import { is } from '../utils/func';
-import {
-  TIMES_12_MODE,
-  TIMES_24_MODE
-} from '../utils/const_value';
+import React from "react";
+import PropTypes from "prop-types";
+import moment from 'moment';
+import OutsideClickHandler from "./OutsideClickHandler";
+import MaterialTheme from "./MaterialTheme";
+import ClassicTheme, { timesToMap } from "./ClassicTheme";
+import timeHelper from "../utils/time.js";
+import languageHelper from "../utils/language";
+import ICONS from "../utils/icons";
+import { is } from "../utils/func";
+import { TIMES_12_MODE, TIMES_24_MODE } from "../utils/const_value";
 
 // aliases for defaultProps readability
 const TIME = timeHelper.time({ useTz: false });
@@ -36,15 +33,12 @@ const propTypes = {
   placeholder: PropTypes.string,
   theme: PropTypes.string,
   time: PropTypes.string,
-  timeMode: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number
-  ]),
+  timeMode: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   trigger: PropTypes.oneOfType([
     PropTypes.func,
     PropTypes.object,
     PropTypes.instanceOf(React.Component),
-    PropTypes.instanceOf(React.PureComponent)
+    PropTypes.instanceOf(React.PureComponent),
   ]),
   withoutIcon: PropTypes.bool,
   minuteStep: PropTypes.number,
@@ -56,10 +50,10 @@ const propTypes = {
 
 const defaultProps = {
   autoMode: true,
-  colorPalette: 'light',
+  colorPalette: "light",
   draggable: true,
   focused: false,
-  language: 'en',
+  language: "en",
   withMinTime: null,
   withMaxTime: null,
   wrap: false,
@@ -69,15 +63,15 @@ const defaultProps = {
   onMeridiemChange: () => {},
   onMinuteChange: () => {},
   onTimeChange: () => {},
-  placeholder: '',
-  theme: 'material',
-  time: '',
+  placeholder: "",
+  theme: "material",
+  time: "",
   timeMode: TIME.mode,
   trigger: null,
   withoutIcon: false,
   minuteStep: 5,
   limitDrag: false,
-  timeFormat: '',
+  timeFormat: "",
   timeFormatter: null,
   useTz: true,
 };
@@ -88,7 +82,7 @@ class TimePicker extends React.PureComponent {
     const { focused } = props;
     this.state = {
       focused,
-      timeChanged: false
+      timeChanged: false,
     };
 
     this.timeData = this.timeData.bind(this);
@@ -101,17 +95,12 @@ class TimePicker extends React.PureComponent {
   }
 
   timeData(timeChanged) {
-    const {
-      time,
-      timeMode,
-      meridiem,
-      wrap
-    } = this.props;
+    const { time, timeMode, meridiem, wrap } = this.props;
     const timeData = timeHelper.time({
       time,
       meridiem,
       timeMode,
-      wrap
+      wrap,
     });
     return timeData;
   }
@@ -130,7 +119,7 @@ class TimePicker extends React.PureComponent {
 
   onFocus() {
     this.setState({
-      focused: true
+      focused: true,
     });
     const { onFocusChange } = this.props;
     onFocusChange && onFocusChange(true);
@@ -141,49 +130,38 @@ class TimePicker extends React.PureComponent {
     const timeData = this.timeData(this.state.timeChanged);
     // Since someone might pass a time in 24h format, etc., we need to get it from
     // timeData to 'translate' it into the local format, including its accurate meridiem
-    const hour = (parseInt(timeMode, 10) === 12)
-      ? timeData.hour12
-      : timeData.hour24;
+    const hour =
+      parseInt(timeMode, 10) === 12 ? timeData.hour12 : timeData.hour24;
     const minute = timeData.minute;
     return [hour, minute];
   }
 
   getFormattedTime() {
-    const {
-      timeMode,
-      timeFormat,
-      timeFormatter,
-      wrap
-    } = this.props;
+    const { timeMode, timeFormat, timeFormatter, wrap } = this.props;
+    let timeData = this.timeData(this.state.timeChanged);
+    if (timeData && timeData.time) {
+      const timeSplit = timeData.time.split(':');
+      const hour = parseInt(timeSplit[0], 10);
+      const minute = parseInt(timeSplit[1], 10);
+      if (minute !== 0 && minute !== 30) {
+        timeData.customTime = moment(`${hour > 24 ? 24 - hour : hour}:${minute}`, 'H:mm').format('h:mm A');
+        timeData.time = `${timeSplit[0]}:00`;
+      }
+    }
 
     if (wrap) {
-      const timeData = this.timeData(this.state.timeChanged);
       const times12 = timesToMap(TIMES_12_MODE, wrap, 24);
       const times24 = timesToMap(TIMES_24_MODE, wrap, 24);
-      const values24 = times24.map(time => time.value);
+      const values24 = times24.map((time) => time.value);
       const index = values24.indexOf(timeData.time);
-      if (!times12[index]) return '-';
-      let split = times12[index].label.split(' (');
-      
-      if (!split) {
-        split = [];
-
-        // A custom time has been specified, we need to do some trickery here.
-        const timeSplit = timeData.time.split(':');
-        let hour = parseInt(timeSplit[0], 10);
-
-        if (hour >= 24) {
-          split[1] = '+1 day)';
-          hour = 24 - hour;
-        }
-
-        split[0] = `${hour}:${timeSplit[0]}`;
-      }
-      
+      if (!times12[index]) return "-";
+      const split = times12[index].label.split(" (");
       return (
         <div>
-          <span className='time'>{split[0]}</span>
-          <span className='extra'>{split[1] ? '(' + split[1] : ''}</span>
+          <span className="time">
+            {timeData.customTime ? timeData.customTime : split[0]}
+          </span>
+          <span className="extra">{split[1] ? "(" + split[1] : ""}</span>
         </div>
       );
     }
@@ -191,12 +169,12 @@ class TimePicker extends React.PureComponent {
     const [hour, minute] = this.getHourAndMinute();
     const validTimeMode = timeHelper.validateTimeMode(timeMode);
 
-    let times = '';
+    let times = "";
     if (timeFormatter && is.func(timeFormatter)) {
       times = timeFormatter({
         hour,
         minute,
-        meridiem: this.meridiem
+        meridiem: this.meridiem,
       });
     } else if (timeFormat && is.string(timeFormat)) {
       times = timeFormat;
@@ -214,7 +192,9 @@ class TimePicker extends React.PureComponent {
       times = times.replace(/(H|h)/g, Number(hour));
       times = times.replace(/(M|m)/g, Number(minute));
     } else {
-      times = (validTimeMode === 12)
+      times = timeData.customTime
+        ? timeData.customTime
+        : validTimeMode === 12
         ? `${hour} : ${minute} ${this.meridiem}`
         : `${hour} : ${minute}`;
     }
@@ -223,7 +203,7 @@ class TimePicker extends React.PureComponent {
 
   onClearFocus() {
     this.setState({
-      focused: false
+      focused: false,
     });
     const { onFocusChange } = this.props;
     onFocusChange && onFocusChange(false);
@@ -231,7 +211,7 @@ class TimePicker extends React.PureComponent {
 
   onTimeChanged(timeChanged) {
     this.setState({
-      timeChanged
+      timeChanged,
     });
   }
 
@@ -276,9 +256,9 @@ class TimePicker extends React.PureComponent {
     const timeData = this.timeData(this.state.timeChanged);
     const localMessages = this.languageData();
     // eslint-disable-next-line no-unneeded-ternary
-    const m = (meridiem) ? meridiem : timeData.meridiem;
+    const m = meridiem ? meridiem : timeData.meridiem;
     // eslint-disable-next-line no-extra-boolean-cast
-    return m && !!(m.match(/^am|pm/i)) ? localMessages[m.toLowerCase()] : m;
+    return m && !!m.match(/^am|pm/i) ? localMessages[m.toLowerCase()] : m;
   }
 
   renderMaterialTheme() {
@@ -340,39 +320,46 @@ class TimePicker extends React.PureComponent {
       placeholder,
       withoutIcon,
       colorPalette,
-      containerClass: containerClassProp
+      containerClass: containerClassProp,
     } = this.props;
 
     const { focused } = this.state;
     const times = this.getFormattedTime();
 
     const pickerPreviewClass = focused
-      ? 'time_picker_preview active'
-      : 'time_picker_preview';
-    const containerClass = colorPalette === 'dark'
-      ? 'time_picker_container dark'
-      : 'time_picker_container';
+      ? "time_picker_preview active"
+      : "time_picker_preview";
+    const containerClass =
+      colorPalette === "dark"
+        ? "time_picker_container dark"
+        : "time_picker_container";
     const previewContainerClass = withoutIcon
-      ? 'preview_container without_icon'
-      : 'preview_container';
+      ? "preview_container without_icon"
+      : "preview_container";
 
     return (
-      <div className={containerClass + (containerClassProp ? ' ' + containerClassProp : '')}>
-        { trigger || (
+      <div
+        className={
+          containerClass + (containerClassProp ? " " + containerClassProp : "")
+        }
+      >
+        {trigger || (
           <div
             onMouseUp={this.onFocus}
             onTouchEnd={this.onFocus}
-            className={pickerPreviewClass}>
+            className={pickerPreviewClass}
+          >
             <div className={previewContainerClass}>
-              {withoutIcon ? '' : (ICONS.time)}
+              {withoutIcon ? "" : ICONS.time}
               {placeholder || times}
             </div>
           </div>
-        ) }
+        )}
         <OutsideClickHandler
           onOutsideClick={this.onClearFocus}
-          focused={focused}>
-          {theme === 'material'
+          focused={focused}
+        >
+          {theme === "material"
             ? this.renderMaterialTheme()
             : this.renderClassicTheme()}
         </OutsideClickHandler>

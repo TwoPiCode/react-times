@@ -1,10 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import {
-  TIMES_12_MODE,
-  TIMES_24_MODE
-} from '../../utils/const_value';
-import timeHelper from '../../utils/time';
+import React from "react";
+import PropTypes from "prop-types";
+import { TIMES_12_MODE, TIMES_24_MODE } from "../../utils/const_value";
+import timeHelper from "../../utils/time";
 
 const propTypes = {
   hour: PropTypes.string,
@@ -16,20 +13,20 @@ const propTypes = {
   handleMeridiemChange: PropTypes.func,
   withMaxTime: PropTypes.string,
   withMinTime: PropTypes.string,
-  wrap: PropTypes.bool
+  wrap: PropTypes.bool,
 };
 
 const defaultProps = {
-  hour: '00',
-  minute: '00',
+  hour: "00",
+  minute: "00",
   timeMode: 24,
-  meridiem: 'AM',
-  withMaxTime: '23:30',
-  withMinTime: '00:00',
+  meridiem: "AM",
+  withMaxTime: "23:30",
+  withMinTime: "00:00",
   wrap: false,
-  colorPalette: 'light',
+  colorPalette: "light",
   handleTimeChange: () => {},
-  handleMeridiemChange: () => {}
+  handleMeridiemChange: () => {},
 };
 
 let userIsDragging = false;
@@ -38,27 +35,41 @@ let initialTouchY = 0;
 
 export const convert24to12 = (time) => {
   const times24 = timesToMap(TIMES_24_MODE, true, 24);
-  const values24 = times24.map(time => time.value);
-  const index = values24.indexOf(time);
-  return timesToMap(TIMES_12_MODE, true, 12)[index].label.replace(' ', '');
+  const values24 = times24.map((time) => time.value);
+
+  let check = time;
+  const split = time.split(":");
+  const minute = split[1];
+  if (minute !== 0 && minute !== 30) {
+    check = `${split[0]}:00`;
+  }
+
+  const index = values24.indexOf(check);
+  return timesToMap(TIMES_12_MODE, true, 12)[index].label.replace(" ", "");
 };
 
 export const timesToMap = (times, wrap, mode) => {
-  const base = times.map(time => {
-    const split = time.split(':');
+  const base = times.map((time) => {
+    const split = time.split(":");
     return {
       label: time,
-      value: [(parseInt(split[0])).toString().padStart(2, '0'), split.slice(1).join(' ')].join(':')
+      value: [
+        parseInt(split[0]).toString().padStart(2, "0"),
+        split.slice(1).join(" "),
+      ].join(":"),
     };
   });
   if (!wrap) return base;
   return base.concat(
     times.map((time) => {
-      const split = time.split(':');
+      const split = time.split(":");
       let base = mode;
       return {
         label: `${time} (+1 day)`,
-        value: [(base + parseInt(split[0])).toString().padStart(2, '0'), split.slice(1).join(' ')].join(':')
+        value: [
+          (base + parseInt(split[0])).toString().padStart(2, "0"),
+          split.slice(1).join(" "),
+        ].join(":"),
       };
     })
   );
@@ -71,21 +82,21 @@ class ClassicTheme extends React.PureComponent {
   }
 
   handle12ModeHourChange(time) {
-    const [times, meridiem] = time.split(' ');
+    const [times, meridiem] = time.split(" ");
     const { handleTimeChange, handleMeridiemChange } = this.props;
     handleMeridiemChange && handleMeridiemChange(meridiem);
-    handleTimeChange && handleTimeChange({time: times, meridiem});
+    handleTimeChange && handleTimeChange({ time: times, meridiem });
   }
 
   handle24ModeHourChange(time) {
     const { handleTimeChange } = this.props;
-    handleTimeChange && handleTimeChange({time, meridiem: null});
+    handleTimeChange && handleTimeChange({ time, meridiem: null });
   }
 
   checkTimeIsActive(time) {
     const { hour, minute, meridiem } = this.props;
-    const [times, rawMeridiem] = time.split(' ');
-    const [rawHour, rawMinute] = times.split(':');
+    const [times, rawMeridiem] = time.split(" ");
+    const [rawHour, rawMinute] = times.split(":");
     const currentHour = timeHelper.validate(rawHour);
     const currentMinute = timeHelper.validate(rawMinute);
 
@@ -105,21 +116,21 @@ class ClassicTheme extends React.PureComponent {
     const { colorPalette, withMinTime, withMaxTime, wrap } = this.props;
     const times = timesToMap(TIMES_12_MODE, wrap, 12);
     const times24 = timesToMap(TIMES_24_MODE, wrap, 24);
-    const values24 = times24.map(time => time.value);
+    const values24 = times24.map((time) => time.value);
     let sliceLow = 0;
     let sliceHigh = values24.length;
     if (withMinTime) {
-      sliceLow = values24.findIndex(time => time === withMinTime);
+      sliceLow = values24.findIndex((time) => time === withMinTime);
     }
     if (withMaxTime) {
-      sliceHigh = values24.findIndex(time => time === withMaxTime) + 1;
+      sliceHigh = values24.findIndex((time) => time === withMaxTime) + 1;
     }
 
     return [...times].slice(sliceLow, sliceHigh).map((time, index) => {
       const { label, value: hourValue } = time;
       const timeClass = this.checkTimeIsActive(hourValue)
-        ? 'classic_time active'
-        : 'classic_time';
+        ? "classic_time active"
+        : "classic_time";
       return (
         <div
           key={index}
@@ -132,19 +143,26 @@ class ClassicTheme extends React.PureComponent {
             const deltaX = Math.abs(touch.clientX - this.initialTouchX);
             const deltaY = Math.abs(touch.clientY - this.initialTouchY);
             const moveThreshold = 5;
-            this.userIsDragging = deltaX > moveThreshold || deltaY > moveThreshold;
+            this.userIsDragging =
+              deltaX > moveThreshold || deltaY > moveThreshold;
           }}
           onTouchEnd={() => {
             this.userIsDragging = false;
           }}
           onTouchEnd={() => {
             if (this.userIsDragging) return;
-            wrap ? this.handle24ModeHourChange([...values24].slice(sliceLow, sliceHigh)[index])
-            : this.handle12ModeHourChange(hourValue);
+            wrap
+              ? this.handle24ModeHourChange(
+                  [...values24].slice(sliceLow, sliceHigh)[index]
+                )
+              : this.handle12ModeHourChange(hourValue);
           }}
           onMouseDown={() => {
-            wrap ? this.handle24ModeHourChange([...values24].slice(sliceLow, sliceHigh)[index])
-            : this.handle12ModeHourChange(hourValue);
+            wrap
+              ? this.handle24ModeHourChange(
+                  [...values24].slice(sliceLow, sliceHigh)[index]
+                )
+              : this.handle12ModeHourChange(hourValue);
           }}
           className={`${timeClass} ${colorPalette}`}
         >
@@ -157,22 +175,22 @@ class ClassicTheme extends React.PureComponent {
   render24Hours() {
     const { colorPalette, withMinTime, withMaxTime, wrap } = this.props;
     const times = timesToMap(TIMES_24_MODE, wrap, 24);
-    const values = times.map(time => time.value);
+    const values = times.map((time) => time.value);
 
     let sliceLow = 0;
     let sliceHigh = values.length;
     if (withMinTime) {
-      sliceLow = values.findIndex(time => time === withMinTime);
+      sliceLow = values.findIndex((time) => time === withMinTime);
     }
     if (withMaxTime) {
-      sliceHigh = values.findIndex(time => time === withMaxTime) + 1;
+      sliceHigh = values.findIndex((time) => time === withMaxTime) + 1;
     }
 
     return [...times].slice(sliceLow, sliceHigh).map((time, index) => {
       const { label, value: hourValue } = time;
       const timeClass = this.checkTimeIsActive(hourValue)
-        ? 'classic_time active'
-        : 'classic_time';
+        ? "classic_time active"
+        : "classic_time";
       return (
         <div
           key={index}
@@ -185,19 +203,26 @@ class ClassicTheme extends React.PureComponent {
             const deltaX = Math.abs(touch.clientX - this.initialTouchX);
             const deltaY = Math.abs(touch.clientY - this.initialTouchY);
             const moveThreshold = 5;
-            this.userIsDragging = deltaX > moveThreshold || deltaY > moveThreshold;
+            this.userIsDragging =
+              deltaX > moveThreshold || deltaY > moveThreshold;
           }}
           onTouchEnd={() => {
             this.userIsDragging = false;
           }}
           onTouchEnd={() => {
             if (this.userIsDragging) return;
-            wrap ? this.handle24ModeHourChange([...values].slice(sliceLow, sliceHigh)[index])
-            : this.handle12ModeHourChange(hourValue);
+            wrap
+              ? this.handle24ModeHourChange(
+                  [...values].slice(sliceLow, sliceHigh)[index]
+                )
+              : this.handle12ModeHourChange(hourValue);
           }}
           onMouseDown={() => {
-            wrap ? this.handle24ModeHourChange([...values].slice(sliceLow, sliceHigh)[index])
-            : this.handle12ModeHourChange(hourValue);
+            wrap
+              ? this.handle24ModeHourChange(
+                  [...values].slice(sliceLow, sliceHigh)[index]
+                )
+              : this.handle12ModeHourChange(hourValue);
           }}
           className={`${timeClass} ${colorPalette}`}
         >
